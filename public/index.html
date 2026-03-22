@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دستیار اقامت دبی | Dubai Residency Assistant</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#e8ecf1;height:100vh;display:flex;justify-content:center;align-items:center}
+.chat-container{width:100%;max-width:480px;height:100vh;max-height:700px;display:flex;flex-direction:column;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.12)}
+.chat-container.embed{max-width:100%;max-height:100%;border-radius:0;height:100vh}
+.chat-header{background:linear-gradient(135deg,#1a3a5c,#0f6e56);color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header-left{display:flex;align-items:center;gap:10px}
+.header-icon{width:40px;height:40px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px}
+.header-title h1{font-size:16px;font-weight:600}
+.header-title p{font-size:11px;opacity:0.85;margin-top:2px}
+.lang-buttons{display:flex;gap:4px}
+.lang-btn{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:4px 10px;border-radius:12px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.lang-btn:hover,.lang-btn.active{background:rgba(255,255,255,0.35)}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.message{max-width:85%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.6;word-wrap:break-word;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.bot-msg{background:#f1f5f9;color:#1e293b;align-self:flex-start;border-bottom-left-radius:4px}
+[dir="rtl"] .bot-msg{border-bottom-left-radius:16px;border-bottom-right-radius:4px}
+.user-msg{background:#0f6e56;color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+[dir="rtl"] .user-msg{border-bottom-right-radius:16px;border-bottom-left-radius:4px}
+.typing-indicator{display:flex;gap:4px;padding:12px 16px;align-self:flex-start}
+.typing-dot{width:8px;height:8px;background:#94a3b8;border-radius:50%;animation:bounce 1.4s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-8px)}}
+.quick-replies{display:flex;flex-wrap:wrap;gap:8px;padding:8px 16px}
+.quick-btn{background:#f1f5f9;border:1px solid #cbd5e1;color:#1a3a5c;padding:8px 14px;border-radius:20px;cursor:pointer;font-size:13px;transition:all .2s;white-space:nowrap}
+.quick-btn:hover{background:#0f6e56;color:#fff;border-color:#0f6e56}
+.chat-input-area{display:flex;align-items:flex-end;gap:8px;padding:12px 16px;border-top:1px solid #e2e8f0;background:#fff;flex-shrink:0}
+.chat-input{flex:1;border:1px solid #e2e8f0;border-radius:20px;padding:10px 16px;font-size:14px;resize:none;max-height:100px;outline:none;font-family:inherit;line-height:1.4;transition:border-color .2s}
+.chat-input:focus{border-color:#0f6e56}
+.send-btn{width:40px;height:40px;border:none;background:#0f6e56;color:#fff;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0}
+.send-btn:hover{background:#1a3a5c}
+.send-btn:disabled{background:#94a3b8;cursor:not-allowed}
+.send-btn svg{width:18px;height:18px}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:none;justify-content:center;align-items:center;z-index:1000;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:420px;padding:28px;animation:fadeIn .3s ease}
+.modal h2{color:#1a3a5c;font-size:18px;margin-bottom:4px;text-align:center}
+.modal p{color:#64748b;font-size:13px;margin-bottom:20px;text-align:center}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:13px;color:#475569;margin-bottom:4px;font-weight:500}
+.form-group input,.form-group select{width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;outline:none;font-family:inherit;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus{border-color:#0f6e56}
+.form-actions{display:flex;gap:10px;margin-top:20px}
+.btn-primary{flex:1;padding:12px;background:#0f6e56;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s}
+.btn-primary:hover{background:#1a3a5c}
+.btn-secondary{flex:1;padding:12px;background:#f1f5f9;color:#475569;border:none;border-radius:10px;font-size:14px;cursor:pointer;transition:background .2s}
+.btn-secondary:hover{background:#e2e8f0}
+.required{color:#ef4444}
+@media(max-width:520px){.chat-container{max-height:100vh;border-radius:0}}
+</style>
+</head>
+<body>
+
+<div class="chat-container" id="chatContainer">
+  <div class="chat-header">
+    <div class="header-left">
+      <div class="header-icon">🏠</div>
+      <div class="header-title">
+        <h1 id="headerTitle">دستیار اقامت دبی</h1>
+        <p id="headerSubtitle">مشاوره ویزا و اقامت امارات</p>
+      </div>
+    </div>
+    <div class="lang-buttons">
+      <button class="lang-btn active" onclick="setLang('fa')">FA</button>
+      <button class="lang-btn" onclick="setLang('ar')">AR</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+
+  <div class="chat-messages" id="chatMessages"></div>
+
+  <div class="quick-replies" id="quickReplies"></div>
+
+  <div class="chat-input-area">
+    <textarea class="chat-input" id="chatInput" rows="1" placeholder="پیام خود را بنویسید..."></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="leadModal">
+  <div class="modal">
+    <h2 id="modalTitle">مشاوره رایگان</h2>
+    <p id="modalSubtitle">اطلاعات خود را وارد کنید تا کارشناسان ما با شما تماس بگیرند</p>
+    <form onsubmit="submitLead(event)">
+      <div class="form-group">
+        <label id="labelName">نام <span class="required">*</span></label>
+        <input type="text" id="leadName" required>
+      </div>
+      <div class="form-group">
+        <label id="labelWhatsapp">شماره واتساپ <span class="required">*</span></label>
+        <input type="tel" id="leadWhatsapp" required placeholder="+971...">
+      </div>
+      <div class="form-group">
+        <label id="labelEmail">ایمیل (اختیاری)</label>
+        <input type="email" id="leadEmail">
+      </div>
+      <div class="form-group">
+        <label id="labelNationality">ملیت <span class="required">*</span></label>
+        <select id="leadNationality" required>
+          <option value="">انتخاب کنید</option>
+          <option value="iranian">ایرانی</option>
+          <option value="russian">روسی</option>
+          <option value="arab_gcc">عرب (کشورهای شورای همکاری)</option>
+          <option value="arab_other">عرب (سایر)</option>
+          <option value="other">سایر</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label id="labelGoal">هدف شما <span class="required">*</span></label>
+        <select id="leadGoal" required>
+          <option value="">انتخاب کنید</option>
+          <option value="property">خرید ملک</option>
+          <option value="company">ثبت شرکت</option>
+          <option value="golden">ویزای گلدن</option>
+          <option value="freelance">ویزای فریلنسر</option>
+          <option value="employment">ویزای کاری</option>
+          <option value="retirement">ویزای بازنشستگی</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" id="btnSubmitLead">ارسال</button>
+        <button type="button" class="btn-secondary" onclick="closeModal()" id="btnCloseLead">بعداً</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const langData = {
+  fa: {
+    dir: 'rtl',
+    headerTitle: 'دستیار اقامت دبی',
+    headerSubtitle: 'مشاوره ویزا و اقامت امارات',
+    placeholder: 'پیام خود را بنویسید...',
+    welcome: 'سلام! 👋 من دستیار اقامت دبی هستم. در مورد ویزا، اقامت، ثبت شرکت و سرمایه‌گذاری در امارات به شما کمک می‌کنم. چطور می‌تونم کمکتون کنم؟',
+    quickReplies: ['ویزای گلدن چیست؟', 'هزینه ثبت شرکت', 'خرید ملک در دبی', 'ویزای فریلنسر'],
+    modalTitle: 'مشاوره رایگان',
+    modalSubtitle: 'اطلاعات خود را وارد کنید تا کارشناسان ما با شما تماس بگیرند',
+    labelName: 'نام', labelWhatsapp: 'شماره واتساپ', labelEmail: 'ایمیل (اختیاری)',
+    labelNationality: 'ملیت', labelGoal: 'هدف شما',
+    btnSubmit: 'ارسال', btnClose: 'بعداً',
+    nationalityOptions: ['انتخاب کنید','ایرانی','روسی','عرب (شورای همکاری)','عرب (سایر)','سایر'],
+    goalOptions: ['انتخاب کنید','خرید ملک','ثبت شرکت','ویزای گلدن','ویزای فریلنسر','ویزای کاری','ویزای بازنشستگی'],
+    errorMsg: 'متأسفم، مشکلی پیش آمد. لطفاً دوباره تلاش کنید.'
+  },
+  ar: {
+    dir: 'rtl',
+    headerTitle: 'مساعد إقامة دبي',
+    headerSubtitle: 'استشارات التأشيرات والإقامة في الإمارات',
+    placeholder: 'اكتب رسالتك...',
+    welcome: 'مرحباً! 👋 أنا مساعد إقامة دبي. يمكنني مساعدتك في التأشيرات والإقامة وتأسيس الشركات والاستثمار في الإمارات. كيف يمكنني مساعدتك؟',
+    quickReplies: ['ما هي التأشيرة الذهبية؟', 'تكلفة تأسيس شركة', 'شراء عقار في دبي', 'تأشيرة العمل الحر'],
+    modalTitle: 'استشارة مجانية',
+    modalSubtitle: 'أدخل بياناتك وسيتواصل معك مستشارونا',
+    labelName: 'الاسم', labelWhatsapp: 'رقم الواتساب', labelEmail: 'البريد الإلكتروني (اختياري)',
+    labelNationality: 'الجنسية', labelGoal: 'هدفك',
+    btnSubmit: 'إرسال', btnClose: 'لاحقاً',
+    nationalityOptions: ['اختر','إيراني','روسي','عربي (دول الخليج)','عربي (أخرى)','أخرى'],
+    goalOptions: ['اختر','شراء عقار','تأسيس شركة','التأشيرة الذهبية','تأشيرة العمل الحر','تأشيرة عمل','تأشيرة التقاعد'],
+    errorMsg: 'عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.'
+  },
+  en: {
+    dir: 'ltr',
+    headerTitle: 'Dubai Residency Assistant',
+    headerSubtitle: 'UAE Visa & Residency Consultation',
+    placeholder: 'Type your message...',
+    welcome: 'Hello! 👋 I\'m the Dubai Residency Assistant. I can help you with visas, residency, company formation, and investment in the UAE. How can I help you?',
+    quickReplies: ['What is the Golden Visa?', 'Company setup costs', 'Buying property in Dubai', 'Freelancer visa options'],
+    modalTitle: 'Free Consultation',
+    modalSubtitle: 'Enter your details and our specialists will contact you',
+    labelName: 'Name', labelWhatsapp: 'WhatsApp Number', labelEmail: 'Email (optional)',
+    labelNationality: 'Nationality', labelGoal: 'Your Goal',
+    btnSubmit: 'Submit', btnClose: 'Later',
+    nationalityOptions: ['Select','Iranian','Russian','Arab (GCC)','Arab (Other)','Other'],
+    goalOptions: ['Select','Buy Property','Company Formation','Golden Visa','Freelancer Visa','Employment Visa','Retirement Visa'],
+    errorMsg: 'Sorry, something went wrong. Please try again.'
+  }
+};
+
+let currentLang = 'fa';
+let conversationHistory = [];
+let messageCount = 0;
+let leadShown = false;
+let quickRepliesVisible = true;
+
+const isEmbed = new URLSearchParams(window.location.search).get('embed') === '1';
+if (isEmbed) document.getElementById('chatContainer').classList.add('embed');
+
+function setLang(lang) {
+  currentLang = lang;
+  const d = langData[lang];
+  document.documentElement.dir = d.dir;
+  document.documentElement.lang = lang;
+  document.getElementById('headerTitle').textContent = d.headerTitle;
+  document.getElementById('headerSubtitle').textContent = d.headerSubtitle;
+  document.getElementById('chatInput').placeholder = d.placeholder;
+  document.getElementById('chatInput').dir = d.dir === 'rtl' ? 'rtl' : 'ltr';
+  document.getElementById('modalTitle').textContent = d.modalTitle;
+  document.getElementById('modalSubtitle').textContent = d.modalSubtitle;
+  document.getElementById('labelName').innerHTML = d.labelName + ' <span class="required">*</span>';
+  document.getElementById('labelWhatsapp').innerHTML = d.labelWhatsapp + ' <span class="required">*</span>';
+  document.getElementById('labelEmail').textContent = d.labelEmail;
+  document.getElementById('labelNationality').innerHTML = d.labelNationality + ' <span class="required">*</span>';
+  document.getElementById('labelGoal').innerHTML = d.labelGoal + ' <span class="required">*</span>';
+  document.getElementById('btnSubmitLead').textContent = d.btnSubmit;
+  document.getElementById('btnCloseLead').textContent = d.btnClose;
+
+  const natSel = document.getElementById('leadNationality');
+  const goalSel = document.getElementById('leadGoal');
+  const natVals = ['','iranian','russian','arab_gcc','arab_other','other'];
+  const goalVals = ['','property','company','golden','freelance','employment','retirement'];
+  natSel.innerHTML = d.nationalityOptions.map((t,i) => `<option value="${natVals[i]}">${t}</option>`).join('');
+  goalSel.innerHTML = d.goalOptions.map((t,i) => `<option value="${goalVals[i]}">${t}</option>`).join('');
+
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+
+  // Reset chat on language change
+  conversationHistory = [];
+  messageCount = 0;
+  quickRepliesVisible = true;
+  document.getElementById('chatMessages').innerHTML = '';
+  addBotMessage(d.welcome);
+  showQuickReplies();
+}
+
+function addBotMessage(text) {
+  const div = document.createElement('div');
+  div.className = 'message bot-msg';
+  div.innerHTML = formatMessage(text);
+  document.getElementById('chatMessages').appendChild(div);
+  scrollToBottom();
+}
+
+function addUserMessage(text) {
+  const div = document.createElement('div');
+  div.className = 'message user-msg';
+  div.textContent = text;
+  document.getElementById('chatMessages').appendChild(div);
+  scrollToBottom();
+}
+
+function formatMessage(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n- /g, '<br>• ')
+    .replace(/\n\d+\.\s/g, (m) => '<br>' + m.trim() + ' ')
+    .replace(/\n/g, '<br>');
+}
+
+function showTyping() {
+  const div = document.createElement('div');
+  div.className = 'typing-indicator';
+  div.id = 'typingIndicator';
+  div.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  document.getElementById('chatMessages').appendChild(div);
+  scrollToBottom();
+}
+
+function hideTyping() {
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+
+function scrollToBottom() {
+  const c = document.getElementById('chatMessages');
+  c.scrollTop = c.scrollHeight;
+}
+
+function showQuickReplies() {
+  if (!quickRepliesVisible) return;
+  const container = document.getElementById('quickReplies');
+  const replies = langData[currentLang].quickReplies;
+  container.innerHTML = replies.map(r => `<button class="quick-btn" onclick="sendQuickReply('${r.replace(/'/g, "\\'")}')">${r}</button>`).join('');
+}
+
+function hideQuickReplies() {
+  quickRepliesVisible = false;
+  document.getElementById('quickReplies').innerHTML = '';
+}
+
+function sendQuickReply(text) {
+  hideQuickReplies();
+  document.getElementById('chatInput').value = text;
+  sendMessage();
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  if (quickRepliesVisible) hideQuickReplies();
+
+  addUserMessage(text);
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('sendBtn').disabled = true;
+
+  conversationHistory.push({ role: 'user', content: text });
+  if (conversationHistory.length > 20) conversationHistory = conversationHistory.slice(-20);
+
+  showTyping();
+  messageCount++;
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: conversationHistory })
+    });
+
+    hideTyping();
+
+    if (!res.ok) throw new Error('API error');
+
+    const data = await res.json();
+    conversationHistory.push({ role: 'assistant', content: data.message });
+    addBotMessage(data.message);
+
+    if (!leadShown && (data.leadDetected || messageCount >= 4)) {
+      setTimeout(() => showLeadModal(), 1500);
+    }
+  } catch (err) {
+    hideTyping();
+    addBotMessage(langData[currentLang].errorMsg);
+  }
+
+  document.getElementById('sendBtn').disabled = false;
+  input.focus();
+}
+
+function showLeadModal() {
+  if (leadShown) return;
+  document.getElementById('leadModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('leadModal').classList.remove('show');
+  leadShown = true;
+}
+
+async function submitLead(e) {
+  e.preventDefault();
+  const lead = {
+    name: document.getElementById('leadName').value,
+    whatsapp: document.getElementById('leadWhatsapp').value,
+    email: document.getElementById('leadEmail').value,
+    nationality: document.getElementById('leadNationality').value,
+    goal: document.getElementById('leadGoal').value,
+    language: currentLang,
+    conversationHistory: conversationHistory.slice(-6)
+  };
+
+  try {
+    await fetch('/api/lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(lead)
+    });
+  } catch (err) {
+    console.error('Lead submission error:', err);
+  }
+
+  closeModal();
+}
+
+// Auto-resize textarea
+const chatInput = document.getElementById('chatInput');
+chatInput.addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+});
+
+chatInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+// Initialize
+setLang('fa');
+</script>
+</body>
+</html>
