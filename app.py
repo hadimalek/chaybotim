@@ -1,4 +1,4 @@
-"""UAE Company Registration & Visa Chatbot - Flask Application."""
+"""Residency24 - UAE Visa, Company Registration & Property Sales Chatbot."""
 
 import os
 
